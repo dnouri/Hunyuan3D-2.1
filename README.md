@@ -1,3 +1,6 @@
+> **Fork Notice:** This is a fork of [Tencent/Hunyuan3D-2.1](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1)
+> that adds a **serverless REST API** via [Modal](https://modal.com). No local GPU required.
+> See [Serverless API](#serverless-api-no-local-gpu) below or jump to [modal_app/](modal_app/) for details.
 
 <p align="center">
   <img src="assets/images/teaser.jpg">
@@ -141,6 +144,46 @@ python3 gradio_app.py \
   --texgen_model_path tencent/Hunyuan3D-2.1 \
   --low_vram_mode
 ```
+
+
+### Serverless API (No Local GPU)
+
+Don't have a GPU? The Modal integration runs Hunyuan3D-2.1 on cloud GPUs and
+exposes a REST API. Your client sends an image, the API returns a 3D mesh.
+
+**Quick Start:**
+
+```bash
+# 1. Install Modal CLI and authenticate
+pip install modal && modal setup
+
+# 2. Configure secrets (requires AWS S3 bucket for artifact storage)
+modal secret create aws-credentials \
+    AWS_ACCESS_KEY_ID="..." AWS_SECRET_ACCESS_KEY="..." \
+    AWS_REGION="us-east-1" S3_BUCKET_NAME="your-bucket"
+modal secret create api-keys VALID_API_KEYS="sk_live_yourkey"
+
+# 3. Deploy (first deploy builds image ~15min, subsequent deploys ~30s)
+modal deploy modal_app/main.py
+```
+
+**Generate a 3D mesh:**
+
+```bash
+curl -X POST https://your-app.modal.run/generate/stream \
+  -H "X-API-Key: sk_live_yourkey" \
+  -F "image=@photo.png"
+```
+
+Cost: ~$0.04 per generation (~$37 per 1000 requests).
+
+**Documentation:**
+
+| Document | Description |
+|----------|-------------|
+| [modal_app/README.md](modal_app/README.md) | Architecture, design decisions |
+| [modal_app/docs/DEPLOYMENT.md](modal_app/docs/DEPLOYMENT.md) | Full deployment guide, secrets, monitoring |
+| [modal_app/docs/API.md](modal_app/docs/API.md) | API reference, SSE events, examples |
 
 
 ## 🔗 BibTeX

@@ -1,0 +1,24 @@
+# Modal-specific dependencies for serverless deployment
+# These are in addition to requirements.txt
+
+# Modal SDK
+modal>=0.66.0
+
+# FastAPI for REST API
+fastapi>=0.115.0
+python-multipart>=0.0.9  # Required for form data / file uploads
+
+# Image processing (used by services)
+Pillow>=10.0.0
+
+# AWS SDK for S3 artifact storage
+boto3>=1.35.0
+
+# Fast HuggingFace model downloads during image build
+hf_transfer>=0.1.8
+
+# Testing dependencies
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+moto[s3]>=5.0.0
+httpx>=0.27.0

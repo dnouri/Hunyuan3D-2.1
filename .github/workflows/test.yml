@@ -1,0 +1,31 @@
+# Unit tests for Modal integration
+#
+# Runs pytest on modal_app/tests/, excluding integration and e2e tests
+# that require Modal/AWS infrastructure. Those run separately via
+# `modal run` after deployment.
+
+name: Test
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: modal_requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r modal_requirements.txt
+
+      - name: Run tests
+        run: pytest modal_app/tests/ -m "not integration and not e2e" -v

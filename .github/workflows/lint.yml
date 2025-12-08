@@ -1,0 +1,29 @@
+# Ruff linting and formatting checks
+#
+# Uses the official astral-sh/ruff-action for fast Python linting.
+# Configuration lives in pyproject.toml under [tool.ruff].
+
+name: Lint
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  ruff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ruff check
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: check
+          src: modal_app
+
+      - name: Ruff format check
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: format --check --diff
+          src: modal_app
